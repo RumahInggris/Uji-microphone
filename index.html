@@ -51,7 +51,7 @@ ol { list-style:none; margin:0; padding:0; display:grid; gap:14px; }
 .fix li { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; background:#fff; border:2px solid var(--navy); border-radius:12px; padding:8px 10px; }
 .own { background:var(--lav-light); border-radius:14px; padding:10px 12px; display:grid; gap:6px; }
 .own audio { width:100%; }
-textarea { width:100%; min-height:140px; font: 13px/1.4 ui-monospace, Menlo, Consolas, monospace; border:2px solid var(--navy); border-radius:12px; padding:8px; }
+textarea { width:100%; min-height:260px; font: 13px/1.4 ui-monospace, Menlo, Consolas, monospace; border:2px solid var(--navy); border-radius:12px; padding:8px; }
 label.chk { display:flex; gap:10px; align-items:flex-start; font-size:15px; }
 label.chk input { width:20px; height:20px; margin-top:2px; }
 select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-radius:10px; background:#fff; }
@@ -90,7 +90,7 @@ select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-r
   <section class="card" aria-labelledby="logh">
     <h2 id="logh">3. Catatan uji</h2>
     <p class="muted" style="margin-bottom:8px">Kalau ada yang tidak berfungsi, buka bagian ini lalu kirim tangkapan layarnya ke pembuat halaman ini.</p>
-    <details><summary style="cursor:pointer;font-weight:700">Lihat catatan teknis</summary><textarea id="log" readonly aria-label="Catatan teknis"></textarea></details>
+    <details open><summary style="cursor:pointer;font-weight:700">Catatan teknis</summary><textarea id="log" readonly aria-label="Catatan teknis"></textarea></details>
   </section>
 </main>
 
@@ -339,7 +339,7 @@ select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-r
         if (had) S.msg[i] = '';
         render();
       }
-    }, 4000);
+    }, 8000);
   }
 
   document.addEventListener('click', function (e) {
