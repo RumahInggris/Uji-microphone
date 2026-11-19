@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Uji mikrofon | Yang Penting Inggris</title>
+<style>
+:root { --navy:#1F2340; --accent:#5B4BE0; --lav:#E6E1FF; --lav-light:#F3F0FF; --mint:#D6F5EA; --coral:#E5584A; --muted:#5A5E7A; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color:var(--navy); background:#FFFDF8; line-height:1.55; }
+main { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; display:grid; gap:16px; }
+h1 { font-size: 26px; margin: 0; line-height:1.25; }
+h2 { font-size: 19px; margin: 0 0 8px; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.card { border:2px solid var(--navy); border-radius:18px; padding:16px; background:#fff; }
+.note { border-radius:14px; background:var(--lav-light); padding:12px 14px; font-size:15px; }
+.warn { background:#FFF6D6; }
+.badge { display:inline-block; font-size:12px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; background:var(--lav); border:2px solid var(--navy); border-radius:999px; padding:3px 10px; }
+button { font: inherit; cursor: pointer; }
+.btn { font-weight:800; font-size:16px; color:#fff; background:var(--accent); border:2px solid var(--navy); border-radius:999px; padding:9px 18px; min-height:44px; box-shadow:0 3px 0 var(--navy); }
+.btn.flat { background:#fff; color:var(--navy); box-shadow:none; }
+.btn.small { font-size:14px; min-height:38px; padding:5px 12px; box-shadow:none; }
+.row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+table { width:100%; border-collapse: collapse; font-size:15px; }
+td { padding:6px 4px; border-bottom:1px solid #E7E4F5; vertical-align: top; }
+td:last-child { text-align:right; font-weight:700; }
+.ok { color:#0E7A55; } .bad { color:#B3261E; } .mid { color:#8A6300; }
+ol { list-style:none; margin:0; padding:0; display:grid; gap:14px; }
+.item { border:2px solid var(--navy); border-radius:18px; padding:14px; background:#fff; display:flex; flex-direction:column; gap:10px; }
+.item.active { background:#FFE1D8; }
+.n { font-size:12px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:var(--accent); }
+.text { font-size:21px; font-weight:700; line-height:1.7; }
+.w { padding:1px 3px; border-radius:6px; }
+.w.ok { background:#CFF1E3; color:var(--navy); }
+.w.near { background:#FFF0B8; box-shadow: inset 0 -3px 0 #F2B705; color:var(--navy); }
+.w.bad, .w.miss { background:#FFD9D3; box-shadow: inset 0 -3px 0 #E5584A; color:var(--navy); }
+.rec { display:inline-flex; align-items:center; gap:8px; font-weight:800; font-size:16px; color:#fff; background:var(--coral); border:2px solid var(--navy); border-radius:999px; padding:8px 18px; min-height:44px; box-shadow:0 3px 0 var(--navy); }
+.rec.on { background:var(--navy); animation: pulse 1.2s ease-in-out infinite; }
+.rec.small { font-size:14px; min-height:38px; padding:5px 12px; box-shadow:none; }
+@keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(229,88,74,.55);} 50% { box-shadow:0 0 0 8px rgba(229,88,74,0);} }
+@media (prefers-reduced-motion: reduce) { .rec.on { animation:none; } }
+.status { font-weight:700; font-size:15px; }
+.status.err { color:#B3261E; }
+.result { border-radius:14px; padding:10px 12px; display:grid; gap:6px; }
+.result.good { background:var(--mint); } .result.mid { background:#FFF6D6; } .result.low { background:#FFE9E5; }
+.score b { font-size:20px; }
+.heard { font-size:14px; color:var(--muted); word-break:break-word; }
+.fix { list-style:none; margin:4px 0 0; padding:0; display:grid; gap:8px; }
+.fix li { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; background:#fff; border:2px solid var(--navy); border-radius:12px; padding:8px 10px; }
+.own { background:var(--lav-light); border-radius:14px; padding:10px 12px; display:grid; gap:6px; }
+.own audio { width:100%; }
+textarea { width:100%; min-height:140px; font: 13px/1.4 ui-monospace, Menlo, Consolas, monospace; border:2px solid var(--navy); border-radius:12px; padding:8px; }
+label.chk { display:flex; gap:10px; align-items:flex-start; font-size:15px; }
+label.chk input { width:20px; height:20px; margin-top:2px; }
+select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-radius:10px; background:#fff; }
+.sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <span class="badge">Halaman uji</span>
+    <h1>Uji mikrofon dan koreksi suara</h1>
+    <p class="muted" style="margin-top:6px">Halaman ini hanya untuk mencoba fitur Rekam. Isinya bukan materi kursus. Dibuat untuk menguji website Yang Penting Inggris.</p>
+  </div>
+
+  <section class="card" aria-labelledby="cek">
+    <h2 id="cek">1. Periksa perangkatmu</h2>
+    <table><tbody id="checks"></tbody></table>
+    <div class="row" style="margin-top:10px"><button class="btn small" id="btnMic" type="button">Cek mikrofon</button><span class="muted" id="micMsg" role="status" aria-live="polite"></span></div>
+  </section>
+
+  <section class="card stack" aria-labelledby="coba">
+    <h2 id="coba">2. Coba baca kalimat</h2>
+    <div class="note" style="margin-bottom:10px"><strong>Yang perlu kamu tahu:</strong> browser mengubah suaramu menjadi teks lewat layanan pengenalan suara miliknya (di Chrome: Google). Hasilnya <strong>perkiraan</strong>, bukan penilaian guru. Rekaman suaramu untuk didengar kembali hanya ada di memori halaman ini dan hilang saat halaman ditutup. Halaman ini tidak mengirim apa pun ke server kami. Kalau kamu belum 18 tahun, minta izin orang tua atau gurumu dulu.</div>
+    <div class="row" style="margin-bottom:12px">
+      <label class="chk"><input type="checkbox" id="keep" checked> <span>Rekam juga suaraku supaya bisa kudengarkan kembali</span></label>
+    </div>
+    <div class="row" style="margin-bottom:12px"><label for="accent">Aksen contoh dan pengenalan:</label>
+      <select id="accent"><option value="en-US">Amerika</option><option value="en-GB">British</option></select></div>
+    <ol id="list"></ol>
+  </section>
+
+  <section class="card" aria-labelledby="logh">
+    <h2 id="logh">3. Catatan uji</h2>
+    <p class="muted" style="margin-bottom:8px">Kalau ada yang tidak berfungsi, buka bagian ini lalu kirim tangkapan layarnya ke pembuat halaman ini.</p>
+    <details><summary style="cursor:pointer;font-weight:700">Lihat catatan teknis</summary><textarea id="log" readonly aria-label="Catatan teknis"></textarea></details>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var SENTENCES = [
+    ['I like to read books in the evening.', 'Saya suka membaca buku di malam hari.'],
+    ['The weather is nice today.', 'Cuacanya bagus hari ini.'],
+    ['Can you help me, please?', 'Bisa tolong saya?']
+  ];
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var logEl = $('#log'); var t0 = Date.now();
+  function log(m) { logEl.value += '[' + ((Date.now() - t0) / 1000).toFixed(1) + 's] ' + m + '\n'; }
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  var inFrame = (function () { try { return window.self !== window.top; } catch (e) { return true; } })();
+  var MIME = (function () {
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
+    var c = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
+    for (var i = 0; i < c.length; i++) { if (MediaRecorder.isTypeSupported(c[i])) return c[i]; }
+    return '';
+  })();
+
+  /* ---------- pemeriksaan perangkat ---------- */
+  var checks = [
+    ['Browser mendukung pengenalan suara', SR ? ['Ya', 'ok'] : ['Tidak (coba Chrome, Edge, atau Safari)', 'bad']],
+    ['Browser bisa merekam suara', window.MediaRecorder ? ['Ya', 'ok'] : ['Tidak', 'bad']],
+    ['Halaman aman (https)', window.isSecureContext ? ['Ya', 'ok'] : ['Tidak, mikrofon akan diblokir', 'bad']],
+    ['Dibuka langsung (bukan di dalam bingkai)', inFrame ? ['Tidak, mikrofon bisa diblokir', 'bad'] : ['Ya', 'ok']],
+    ['Izin mikrofon', ['Belum dicek', 'mid']]
+  ];
+  function renderChecks() {
+    $('#checks').innerHTML = checks.map(function (c) { return '<tr><td>' + esc(c[0]) + '</td><td class="' + c[1][1] + '">' + esc(c[1][0]) + '</td></tr>'; }).join('');
+  }
+  renderChecks();
+  log('Browser: ' + navigator.userAgent);
+  log('Pengenalan suara: ' + (SR ? 'ada' : 'tidak ada') + ' | MediaRecorder: ' + (window.MediaRecorder ? 'ada, format ' + (MIME || 'bawaan') : 'tidak ada') + ' | aman: ' + window.isSecureContext + ' | bingkai: ' + inFrame);
+  $('#btnMic').addEventListener('click', function () {
+    var out = $('#micMsg');
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { out.textContent = 'Browser ini tidak bisa meminta mikrofon.'; checks[4][1] = ['Tidak didukung', 'bad']; renderChecks(); return; }
+    out.textContent = 'Meminta izin… tekan Izinkan di kotak yang muncul.';
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (s) {
+      var n = s.getAudioTracks().length; s.getTracks().forEach(function (t) { t.stop(); });
+      checks[4][1] = ['Diizinkan', 'ok']; renderChecks(); out.textContent = 'Mikrofon berfungsi.'; log('getUserMedia berhasil, jalur audio: ' + n);
+    }).catch(function (e) {
+      checks[4][1] = [e.name === 'NotAllowedError' ? 'Diblokir' : 'Gagal (' + e.name + ')', 'bad']; renderChecks();
+      out.textContent = e.name === 'NotAllowedError' ? 'Mikrofon diblokir. Tekan ikon gembok di kolom alamat, izinkan mikrofon, lalu muat ulang halaman.' : 'Mikrofon tidak bisa dipakai: ' + e.name;
+      log('getUserMedia gagal: ' + e.name + ' ' + (e.message || ''));
+    });
+  });
+
+  /* ---------- pembanding kata ---------- */
+  var NUMW = { '0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine', '10': 'ten', '11': 'eleven', '12': 'twelve', '20': 'twenty' };
+  var CONTR = { "i'm": 'i am', "don't": 'do not', "it's": 'it is', "that's": 'that is', "what's": 'what is', "can't": 'cannot', "didn't": 'did not', "you're": 'you are', "we're": 'we are', "they're": 'they are', "he's": 'he is', "she's": 'she is', "there's": 'there is', "i'll": 'i will', "how's": 'how is' };
+  function normWords(s) {
+    var out = [];
+    String(s).toLowerCase().replace(/[‘’]/g, "'").replace(/(\d+):(\d+)/g, '$1 $2').replace(/[^a-z0-9' -]/g, ' ').replace(/-/g, ' ').split(/\s+/).forEach(function (w) {
+      w = w.replace(/^'+|'+$/g, ''); if (!w) return;
+      if (CONTR[w]) { CONTR[w].split(' ').forEach(function (x) { out.push(x); }); return; }
+      out.push(NUMW[w] || w);
+    });
+    return out;
+  }
+  function editDist(a, b) {
+    var m = a.length, n = b.length, prev = [], j;
+    for (j = 0; j <= n; j++) prev[j] = j;
+    for (var i = 1; i <= m; i++) { var cur = [i]; for (j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; }
+    return prev[n];
+  }
+  function isNear(a, b) { if (a === b) return false; var L = Math.max(a.length, b.length); if (L < 4) return false; var d = editDist(a, b); return d <= 1 || (L >= 8 && d <= 2) || a + 's' === b || b + 's' === a; }
+  function alignWords(T, H) {
+    var n = T.length, m = H.length, INS = 0.6, DEL = 1, D = [], B = [], i, j;
+    for (i = 0; i <= n; i++) { D[i] = []; B[i] = []; for (j = 0; j <= m; j++) { D[i][j] = 0; B[i][j] = ''; } }
+    for (i = 1; i <= n; i++) { D[i][0] = i * DEL; B[i][0] = 'd'; }
+    for (j = 1; j <= m; j++) { D[0][j] = j * INS; B[0][j] = 'i'; }
+    for (i = 1; i <= n; i++) for (j = 1; j <= m; j++) {
+      var c = T[i - 1] === H[j - 1] ? 0 : (isNear(T[i - 1], H[j - 1]) ? 0.4 : 1);
+      var dg = D[i - 1][j - 1] + c, dl = D[i - 1][j] + DEL, ins = D[i][j - 1] + INS;
+      if (dg <= dl && dg <= ins) { D[i][j] = dg; B[i][j] = 'g'; } else if (dl <= ins) { D[i][j] = dl; B[i][j] = 'd'; } else { D[i][j] = ins; B[i][j] = 'i'; }
+    }
+    var res = new Array(n); i = n; j = m;
+    while (i > 0 || j > 0) {
+      var b = B[i][j];
+      if (b === 'g') { var t = T[i - 1], h = H[j - 1]; res[i - 1] = t === h ? { st: 'ok' } : (isNear(t, h) ? { st: 'near', heard: h } : { st: 'bad', heard: h }); i--; j--; }
+      else if (b === 'd') { res[i - 1] = { st: 'miss' }; i--; } else { j--; }
+    }
+    return res;
+  }
+  function tokens(sentence) { return sentence.split(/\s+/).filter(Boolean).map(function (t) { return { t: t, n: normWords(t) }; }); }
+  function applyHeard(tk, heardText, only) {
+    var idxs = [], T = [], own = [], k;
+    if (only === undefined) { for (k = 0; k < tk.length; k++) idxs.push(k); } else idxs = [only];
+    idxs.forEach(function (k) { tk[k].n.forEach(function (w) { T.push(w); own.push(k); }); });
+    var al = alignWords(T, normWords(heardText)), rank = { ok: 0, near: 1, bad: 2, miss: 3 };
+    idxs.forEach(function (k) { tk[k].st = tk[k].n.length ? 'ok' : 'skip'; tk[k].heard = ''; });
+    al.forEach(function (r, x) { var t = tk[own[x]]; if (t.st === 'skip' || rank[r.st] > rank[t.st] || (r.st === t.st && !t.heard && r.heard)) { t.st = r.st; t.heard = r.heard || ''; } });
+  }
+  function scoreOf(tk) {
+    var tot = 0, sum = 0;
+    tk.forEach(function (t) { var w = t.n.length; if (!w) return; tot += w; if (t.st === 'ok') sum += w; else if (t.st === 'near') sum += w * 0.5; });
+    return tot ? Math.round(sum / tot * 100) : 0;
+  }
+  function level(pc) { return pc >= 85 ? ['good', 'Bagus! Hampir semua katamu terbaca jelas.'] : pc >= 60 ? ['mid', 'Hampir tepat. Ulangi bagian yang bertanda.'] : ['low', 'Belum terbaca jelas. Dengarkan contoh, lalu coba lagi pelan-pelan.']; }
+
+  /* ---------- suara contoh ---------- */
+  function speak(text, rate) {
+    try { if (!window.speechSynthesis) { return; } speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text); u.lang = $('#accent').value; u.rate = rate || 0.95; speechSynthesis.speak(u); } catch (e) { log('Suara contoh gagal: ' + e.message); }
+  }
+
+  /* ---------- keadaan ---------- */
+  var S = { res: {}, msg: {}, own: {}, active: null, rec: null, mr: null, stream: null, timer: null, ack: false, ask: null };
+  SENTENCES.forEach(function (s, i) { S.res[i] = { tokens: tokens(s[0]), score: null, heard: '' }; });
+
+  function render() {
+    $('#list').innerHTML = SENTENCES.map(function (ln, i) {
+      var res = S.res[i], active = S.active && S.active.i === i;
+      var words = res.tokens.map(function (t) { return '<span class="w ' + (t.st || '') + '">' + esc(t.t) + (t.st && t.st !== 'ok' && t.st !== 'skip' ? '<span class="sr"> (' + (t.st === 'near' ? 'hampir' : 'kurang jelas') + ')</span>' : '') + '</span>'; }).join(' ');
+      var ctl = '<div class="row"><button class="btn small flat" type="button" data-a="say" data-i="' + i + '">Dengar contoh</button><button class="btn small flat" type="button" data-a="slow" data-i="' + i + '">Pelan</button>' +
+        (active && S.active.k === undefined ? '<button class="rec on" type="button" data-a="stop" aria-pressed="true">Berhenti</button>' : '<button class="rec" type="button" data-a="rec" data-i="' + i + '" aria-pressed="false">' + (res.score !== null ? 'Rekam lagi' : 'Rekam') + '</button>') + '</div>';
+      var status = '';
+      if (active) status = '<p class="status" role="status">Mendengarkan… ' + (S.active.k === undefined ? 'baca kalimat di atas.' : 'ucapkan kata yang dicoba.') + '</p>';
+      else if (S.msg[i]) status = '<p class="status err" role="status">' + esc(S.msg[i]) + '</p>';
+      var result = '';
+      if (res.score !== null && !active) {
+        var lv = level(res.score);
+        var probs = res.tokens.map(function (t, k) { return { t: t, k: k }; }).filter(function (x) { return x.t.st && x.t.st !== 'ok' && x.t.st !== 'skip'; });
+        result = '<div class="result ' + lv[0] + '"><p class="score"><b>' + res.score + '%</b> ' + esc(lv[1]) + '</p><p class="heard">Yang terdengar: <i>“' + esc(res.heard || '…') + '”</i></p>' +
+          (probs.length ? '<ul class="fix">' + probs.map(function (x) {
+            var w = x.t.t.replace(/[.,!?;:"]/g, ''), on = S.active && S.active.i === i && S.active.k === x.k;
+            return '<li><span><b>' + esc(w) + '</b> <span class="muted">' + (x.t.st === 'miss' ? 'tidak terdengar' : 'terdengar: “' + esc(x.t.heard) + '”') + '</span></span><span class="row"><button class="btn small flat" type="button" data-a="sayw" data-w="' + esc(w) + '">Dengar</button>' +
+              (on ? '<button class="rec on small" type="button" data-a="stop">Berhenti</button>' : '<button class="rec small" type="button" data-a="recw" data-i="' + i + '" data-k="' + x.k + '">Coba kata ini</button>') + '</span></li>';
+          }).join('') + '</ul>' : '') + '</div>';
+      }
+      var own = '';
+      if (S.own[i]) own = '<div class="own"><strong>Dengarkan suaramu</strong><audio controls preload="auto" src="' + S.own[i].url + '"></audio><span class="muted" style="font-size:13px">Ukuran rekaman: ' + Math.max(1, Math.round(S.own[i].size / 1024)) + ' KB</span></div>';
+      var ask = S.ask && S.ask.i === i ? '<div class="note" role="alertdialog"><p><strong>Sebelum merekam:</strong> suaramu dikirim ke layanan pengenalan suara milik browser (di Chrome: Google) untuk diubah menjadi teks. Rekaman hanya ada di halaman ini.</p><div class="row" style="margin-top:8px"><button class="btn small" type="button" data-a="ack">Mengerti, mulai rekam</button><button class="btn small flat" type="button" data-a="ackno">Batal</button></div></div>' : '';
+      return '<li class="item' + (active ? ' active' : '') + '"><p class="n">Kalimat ' + (i + 1) + ' dari ' + SENTENCES.length + '</p><p class="text">' + words + '</p><p class="muted">' + esc(ln[1]) + '</p>' + ctl + ask + status + result + own + '</li>';
+    }).join('');
+  }
+
+  function errText(c) {
+    if (c === 'not-allowed' || c === 'service-not-allowed') return inFrame ? 'Halaman ini sedang di dalam bingkai yang memblokir mikrofon. Buka halaman langsung di Chrome.' : 'Mikrofon belum diizinkan. Tekan ikon gembok di kolom alamat, izinkan mikrofon, lalu coba lagi.';
+    if (c === 'no-speech') return 'Suaramu tidak terdengar. Dekatkan mikrofon dan coba lagi.';
+    if (c === 'audio-capture') return 'Mikrofon tidak ditemukan di perangkat ini.';
+    if (c === 'network') return 'Pengenalan suara butuh internet. Periksa koneksimu lalu coba lagi.';
+    if (c === 'aborted') return '';
+    return 'Pengenalan suara gagal (' + c + '). Coba lagi sebentar lagi.';
+  }
+
+  function stopCapture() {
+    clearTimeout(S.timer);
+    if (S.mr && S.mr.state !== 'inactive') { try { S.mr.stop(); } catch (e) { /* abaikan */ } }
+    if (S.stream) { S.stream.getTracks().forEach(function (t) { t.stop(); }); S.stream = null; }
+  }
+  function abortAll() {
+    if (S.rec) { var r = S.rec; S.rec = null; try { r.onend = null; r.onerror = null; r.onresult = null; r.abort(); } catch (e) { /* abaikan */ } }
+    stopCapture(); S.active = null;
+  }
+
+  function start(i, k) {
+    if (!SR) { S.msg[i] = 'Browser ini belum mendukung pengenalan suara. Coba Chrome, Edge, atau Safari.'; render(); return; }
+    if (!S.ack) { S.ask = { i: i, k: k }; render(); return; }
+    abortAll(); try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) { /* abaikan */ }
+    S.msg[i] = ''; S.active = { i: i, k: k };
+    log('Rekam kalimat ' + (i + 1) + (k === undefined ? '' : ', kata ' + (k + 1)));
+    render();
+    var wantOwn = $('#keep').checked && k === undefined && window.MediaRecorder && navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
+    if (!wantOwn) { startRecognition(i, k, null); return; }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      if (!S.active || S.active.i !== i) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
+      log('Mikrofon diizinkan untuk perekam');
+      checks[4][1] = ['Diizinkan', 'ok']; renderChecks();
+      S.stream = stream; var chunks = [], mr;
+      try { mr = MIME ? new MediaRecorder(stream, { mimeType: MIME }) : new MediaRecorder(stream); } catch (e) { log('MediaRecorder gagal dibuat: ' + e.name); mr = null; }
+      if (mr) {
+        S.mr = mr;
+        mr.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+        mr.onstop = function () {
+          var blob = new Blob(chunks, { type: mr.mimeType || MIME || 'audio/webm' });
+          log('Perekam berhenti, ukuran ' + blob.size + ' byte, format ' + blob.type);
+          if (blob.size > 0) { if (S.own[i]) URL.revokeObjectURL(S.own[i].url); S.own[i] = { url: URL.createObjectURL(blob), size: blob.size }; }
+          else { S.msg[i] = (S.msg[i] ? S.msg[i] + ' ' : '') + 'Rekaman suaramu kosong.'; }
+          render();
+        };
+        try { mr.start(); log('Perekam mulai'); } catch (e) { log('Perekam gagal mulai: ' + e.name); S.mr = null; }
+      }
+      startRecognition(i, k, mr);
+    }).catch(function (e) {
+      log('getUserMedia gagal: ' + e.name + ' ' + (e.message || ''));
+      checks[4][1] = [e.name === 'NotAllowedError' ? 'Diblokir' : 'Gagal (' + e.name + ')', 'bad']; renderChecks();
+      S.active = null; S.msg[i] = errText(e.name === 'NotAllowedError' ? 'not-allowed' : 'audio-capture'); render();
+    });
+  }
+
+  function startRecognition(i, k, mr) {
+    var r = new SR(), got = false, err = '';
+    r.lang = $('#accent').value; r.interimResults = false; r.maxAlternatives = 1; r.continuous = false;
+    r.onstart = function () { log('Pengenal suara mulai'); };
+    r.onresult = function (e) {
+      got = true; var text = ''; try { text = e.results[0][0].transcript; } catch (x) { text = ''; }
+      log('Hasil pengenal: "' + text + '"');
+      var res = S.res[i]; applyHeard(res.tokens, text, k); res.heard = text; res.score = scoreOf(res.tokens);
+    };
+    r.onerror = function (e) { err = e && e.error ? e.error : 'error'; log('Galat pengenal: ' + err); };
+    r.onend = function () {
+      log('Pengenal suara selesai');
+      if (S.rec === r) { S.rec = null; }
+      S.active = null; stopCapture();
+      if (!got) S.msg[i] = errText(err) || 'Suaramu belum terbaca. Coba lagi.';
+      render();
+    };
+    S.rec = r;
+    try { r.start(); } catch (e) { log('Pengenal gagal mulai: ' + e.name); S.rec = null; S.active = null; S.msg[i] = 'Pengenalan suara belum bisa dimulai. Coba lagi.'; stopCapture(); render(); return; }
+    S.timer = setTimeout(function () { try { r.stop(); } catch (e) { /* abaikan */ } }, 15000);
+  }
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-a]'); if (!el) return;
+    var a = el.getAttribute('data-a'), i = Number(el.getAttribute('data-i'));
+    if (a === 'say') speak(SENTENCES[i][0], 0.95);
+    else if (a === 'slow') speak(SENTENCES[i][0], 0.6);
+    else if (a === 'sayw') speak(el.getAttribute('data-w'), 0.8);
+    else if (a === 'rec') start(i);
+    else if (a === 'recw') start(i, Number(el.getAttribute('data-k')));
+    else if (a === 'stop') { if (S.rec) { try { S.rec.stop(); } catch (x) { abortAll(); render(); } } }
+    else if (a === 'ack') { S.ack = true; var q = S.ask; S.ask = null; if (q) start(q.i, q.k); }
+    else if (a === 'ackno') { S.ask = null; render(); }
+  });
+  render();
+})();
+</script>
+</body>
+</html>
