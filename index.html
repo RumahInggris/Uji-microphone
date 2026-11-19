@@ -208,7 +208,8 @@ select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-r
       var ctl = '<div class="row"><button class="btn small flat" type="button" data-a="say" data-i="' + i + '">Dengar contoh</button><button class="btn small flat" type="button" data-a="slow" data-i="' + i + '">Pelan</button>' +
         (active && S.active.k === undefined ? '<button class="rec on" type="button" data-a="stop" aria-pressed="true">Berhenti</button>' : '<button class="rec" type="button" data-a="rec" data-i="' + i + '" aria-pressed="false">' + (res.score !== null ? 'Rekam lagi' : 'Rekam') + '</button>') + '</div>';
       var status = '';
-      if (active) status = '<p class="status" role="status">Mendengarkan… ' + (S.active.k === undefined ? 'baca kalimat di atas.' : 'ucapkan kata yang dicoba.') + '</p>';
+      if (active && S.stopping) status = '<p class="status" role="status">Memproses suaramu…</p>';
+      else if (active) status = '<p class="status" role="status">Mendengarkan… ' + (S.active.k === undefined ? 'baca kalimat di atas.' : 'ucapkan kata yang dicoba.') + '</p>';
       else if (S.msg[i]) status = '<p class="status err" role="status">' + esc(S.msg[i]) + '</p>';
       var result = '';
       if (res.score !== null && !active) {
@@ -244,7 +245,7 @@ select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-r
   }
   function abortAll() {
     if (S.rec) { var r = S.rec; S.rec = null; try { r.onend = null; r.onerror = null; r.onresult = null; r.abort(); } catch (e) { /* abaikan */ } }
-    stopCapture(); S.active = null;
+    stopCapture(); S.active = null; S.stopping = false;
   }
 
   function start(i, k) {
@@ -295,13 +296,35 @@ select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-r
     r.onend = function () {
       log('Pengenal suara selesai');
       if (S.rec === r) { S.rec = null; }
-      S.active = null; stopCapture();
+      S.active = null; S.stopping = false; stopCapture();
       if (!got) S.msg[i] = errText(err) || 'Suaramu belum terbaca. Coba lagi.';
       render();
     };
     S.rec = r;
     try { r.start(); } catch (e) { log('Pengenal gagal mulai: ' + e.name); S.rec = null; S.active = null; S.msg[i] = 'Pengenalan suara belum bisa dimulai. Coba lagi.'; stopCapture(); render(); return; }
     S.timer = setTimeout(function () { try { r.stop(); } catch (e) { /* abaikan */ } }, 15000);
+  }
+
+  /* Tombol Berhenti: selalu bekerja, walau pengenal suara lambat menjawab */
+  function stopNow() {
+    var act = S.active; if (!act) return;
+    log('Tombol Berhenti ditekan');
+    var i = act.i, r = S.rec;
+    S.stopping = true;
+    if (S.mr && S.mr.state !== 'inactive') { try { S.mr.stop(); } catch (e) { /* abaikan */ } }
+    if (!r) { abortAll(); S.stopping = false; S.msg[i] = ''; render(); return; }
+    S.msg[i] = ''; render();
+    try { r.stop(); } catch (e) { log('stop() gagal: ' + e.name); }
+    setTimeout(function () {
+      if (S.rec === r) {
+        log('Pengenal suara tidak menjawab, dihentikan paksa');
+        var had = S.res[i].score !== null;
+        abortAll(); S.stopping = false;
+        S.msg[i] = 'Suaramu belum terbaca. Coba lagi, dan berhenti setelah selesai bicara.';
+        if (had) S.msg[i] = '';
+        render();
+      }
+    }, 2500);
   }
 
   document.addEventListener('click', function (e) {
@@ -312,7 +335,7 @@ select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-r
     else if (a === 'sayw') speak(el.getAttribute('data-w'), 0.8);
     else if (a === 'rec') start(i);
     else if (a === 'recw') start(i, Number(el.getAttribute('data-k')));
-    else if (a === 'stop') { if (S.rec) { try { S.rec.stop(); } catch (x) { abortAll(); render(); } } }
+    else if (a === 'stop') { stopNow(); }
     else if (a === 'ack') { S.ack = true; var q = S.ask; S.ask = null; if (q) start(q.i, q.k); }
     else if (a === 'ackno') { S.ask = null; render(); }
   });
