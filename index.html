@@ -75,9 +75,13 @@ select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-r
   <section class="card stack" aria-labelledby="coba">
     <h2 id="coba">2. Coba baca kalimat</h2>
     <div class="note" style="margin-bottom:10px"><strong>Yang perlu kamu tahu:</strong> browser mengubah suaramu menjadi teks lewat layanan pengenalan suara miliknya (di Chrome: Google). Hasilnya <strong>perkiraan</strong>, bukan penilaian guru. Rekaman suaramu untuk didengar kembali hanya ada di memori halaman ini dan hilang saat halaman ditutup. Halaman ini tidak mengirim apa pun ke server kami. Kalau kamu belum 18 tahun, minta izin orang tua atau gurumu dulu.</div>
-    <div class="row" style="margin-bottom:12px">
-      <label class="chk"><input type="checkbox" id="keep" checked> <span>Rekam juga suaraku supaya bisa kudengarkan kembali</span></label>
-    </div>
+    <div class="row" style="margin-bottom:12px"><label for="mode">Cara merekam:</label>
+      <select id="mode">
+        <option value="both">A. Rekam suara dan koreksi bersamaan</option>
+        <option value="srfirst">B. Koreksi dulu, rekam suara menyusul</option>
+        <option value="off">C. Koreksi saja (tanpa dengar ulang)</option>
+      </select></div>
+    <p class="muted" style="margin:-4px 0 12px;font-size:14px">Kalau koreksi tidak muncul, coba cara B, lalu cara C.</p>
     <div class="row" style="margin-bottom:12px"><label for="accent">Aksen contoh dan pengenalan:</label>
       <select id="accent"><option value="en-US">Amerika</option><option value="en-GB">British</option></select></div>
     <ol id="list"></ol>
@@ -248,56 +252,67 @@ select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-r
     stopCapture(); S.active = null; S.stopping = false;
   }
 
+  function beginRecorder(i, onFail) {
+    return navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      if (!S.active || S.active.i !== i) { stream.getTracks().forEach(function (t) { t.stop(); }); log('Perekam dibatalkan (rekaman sudah selesai)'); return null; }
+      log('Mikrofon diizinkan untuk perekam');
+      checks[4][1] = ['Diizinkan', 'ok']; renderChecks();
+      S.stream = stream; var chunks = [], mr;
+      try { mr = MIME ? new MediaRecorder(stream, { mimeType: MIME }) : new MediaRecorder(stream); } catch (e) { log('MediaRecorder gagal dibuat: ' + e.name); return null; }
+      S.mr = mr;
+      mr.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      mr.onstop = function () {
+        var blob = new Blob(chunks, { type: mr.mimeType || MIME || 'audio/webm' });
+        log('Perekam berhenti, ukuran ' + blob.size + ' byte, format ' + blob.type);
+        if (blob.size > 0) { if (S.own[i]) URL.revokeObjectURL(S.own[i].url); S.own[i] = { url: URL.createObjectURL(blob), size: blob.size }; }
+        render();
+      };
+      try { mr.start(); log('Perekam mulai'); } catch (e) { log('Perekam gagal mulai: ' + e.name); S.mr = null; }
+      return mr;
+    }).catch(function (e) {
+      log('getUserMedia gagal: ' + e.name + ' ' + (e.message || ''));
+      if (onFail) onFail(e);
+      return null;
+    });
+  }
+
   function start(i, k) {
     if (!SR) { S.msg[i] = 'Browser ini belum mendukung pengenalan suara. Coba Chrome, Edge, atau Safari.'; render(); return; }
     if (!S.ack) { S.ask = { i: i, k: k }; render(); return; }
     abortAll(); try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) { /* abaikan */ }
     S.msg[i] = ''; S.active = { i: i, k: k };
-    log('Rekam kalimat ' + (i + 1) + (k === undefined ? '' : ', kata ' + (k + 1)));
+    var mode = $('#mode').value;
+    if (k !== undefined || !window.MediaRecorder || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) mode = 'off';
+    log('Rekam kalimat ' + (i + 1) + (k === undefined ? '' : ', kata ' + (k + 1)) + ' | cara: ' + mode);
     render();
-    var wantOwn = $('#keep').checked && k === undefined && window.MediaRecorder && navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
-    if (!wantOwn) { startRecognition(i, k, null); return; }
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-      if (!S.active || S.active.i !== i) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
-      log('Mikrofon diizinkan untuk perekam');
-      checks[4][1] = ['Diizinkan', 'ok']; renderChecks();
-      S.stream = stream; var chunks = [], mr;
-      try { mr = MIME ? new MediaRecorder(stream, { mimeType: MIME }) : new MediaRecorder(stream); } catch (e) { log('MediaRecorder gagal dibuat: ' + e.name); mr = null; }
-      if (mr) {
-        S.mr = mr;
-        mr.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
-        mr.onstop = function () {
-          var blob = new Blob(chunks, { type: mr.mimeType || MIME || 'audio/webm' });
-          log('Perekam berhenti, ukuran ' + blob.size + ' byte, format ' + blob.type);
-          if (blob.size > 0) { if (S.own[i]) URL.revokeObjectURL(S.own[i].url); S.own[i] = { url: URL.createObjectURL(blob), size: blob.size }; }
-          else { S.msg[i] = (S.msg[i] ? S.msg[i] + ' ' : '') + 'Rekaman suaramu kosong.'; }
-          render();
-        };
-        try { mr.start(); log('Perekam mulai'); } catch (e) { log('Perekam gagal mulai: ' + e.name); S.mr = null; }
-      }
-      startRecognition(i, k, mr);
-    }).catch(function (e) {
-      log('getUserMedia gagal: ' + e.name + ' ' + (e.message || ''));
-      checks[4][1] = [e.name === 'NotAllowedError' ? 'Diblokir' : 'Gagal (' + e.name + ')', 'bad']; renderChecks();
-      S.active = null; S.msg[i] = errText(e.name === 'NotAllowedError' ? 'not-allowed' : 'audio-capture'); render();
-    });
+    if (mode === 'both') {
+      beginRecorder(i, function (e) { S.active = null; S.msg[i] = errText(e.name === 'NotAllowedError' ? 'not-allowed' : 'audio-capture'); render(); }).then(function (mr) {
+        if (S.active && S.active.i === i) startRecognition(i, k, false);
+      });
+    } else {
+      startRecognition(i, k, mode === 'srfirst');
+    }
   }
 
-  function startRecognition(i, k, mr) {
-    var r = new SR(), got = false, err = '';
+  function startRecognition(i, k, recorderAfter) {
+    var r = new SR(), got = false, err = '', events = [];
     r.lang = $('#accent').value; r.interimResults = false; r.maxAlternatives = 1; r.continuous = false;
     r.onstart = function () { log('Pengenal suara mulai'); };
+    r.onaudiostart = function () { log('Pengenal: mikrofon mulai menangkap'); if (recorderAfter) setTimeout(function () { if (S.active && S.active.i === i && S.rec === r) beginRecorder(i); }, 500); };
+    r.onspeechstart = function () { log('Pengenal: suara terdeteksi'); };
+    r.onspeechend = function () { log('Pengenal: suara berhenti'); };
+    r.onnomatch = function () { log('Pengenal: tidak ada yang cocok'); };
     r.onresult = function (e) {
-      got = true; var text = ''; try { text = e.results[0][0].transcript; } catch (x) { text = ''; }
-      log('Hasil pengenal: "' + text + '"');
+      got = true; var text = '', conf = ''; try { text = e.results[0][0].transcript; conf = e.results[0][0].confidence; } catch (x) { text = ''; }
+      log('Hasil pengenal: "' + text + '" (keyakinan ' + conf + ')');
       var res = S.res[i]; applyHeard(res.tokens, text, k); res.heard = text; res.score = scoreOf(res.tokens);
     };
-    r.onerror = function (e) { err = e && e.error ? e.error : 'error'; log('Galat pengenal: ' + err); };
+    r.onerror = function (e) { err = e && e.error ? e.error : 'error'; log('Galat pengenal: ' + err + ' ' + ((e && e.message) || '')); };
     r.onend = function () {
-      log('Pengenal suara selesai');
+      log('Pengenal suara selesai' + (got ? '' : ' (tanpa hasil)'));
       if (S.rec === r) { S.rec = null; }
       S.active = null; S.stopping = false; stopCapture();
-      if (!got) S.msg[i] = errText(err) || 'Suaramu belum terbaca. Coba lagi.';
+      if (!got) S.msg[i] = (errText(err) || 'Suaramu belum terbaca. Coba lagi.') + ' [kode: ' + (err || 'tanpa-hasil') + ']';
       render();
     };
     S.rec = r;
@@ -324,7 +339,7 @@ select { font: inherit; padding:6px 10px; border:2px solid var(--navy); border-r
         if (had) S.msg[i] = '';
         render();
       }
-    }, 2500);
+    }, 4000);
   }
 
   document.addEventListener('click', function (e) {
